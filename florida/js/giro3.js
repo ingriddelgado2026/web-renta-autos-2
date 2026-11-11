@@ -97,8 +97,15 @@
     if ("IntersectionObserver" in window) new IntersectionObserver(function (es) { if (es[0].isIntersecting) cargar(); }, { rootMargin: "100% 0px" }).observe(sec);
     else cargar();
   };
-  var arrancar = function () { ["scroll", "touchstart", "keydown"].forEach(function (e) { window.removeEventListener(e, arrancar); }); vigilar(); };
-  if (window.scrollY > 0) vigilar(); else ["scroll", "touchstart", "keydown"].forEach(function (e) { window.addEventListener(e, arrancar, { passive: true }); });
+  /* Arranca solo cuando el visitante realmente baja (no por cambios de tamaño de la ventana),
+     y en un momento libre del navegador, para no frenar la carga */
+  var EV = ["scroll", "wheel", "touchmove", "keydown"];
+  var arrancar = function (e) {
+    if (e && e.type === "scroll" && window.scrollY < 40) return;
+    EV.forEach(function (n) { window.removeEventListener(n, arrancar); });
+    if (window.requestIdleCallback) requestIdleCallback(vigilar, { timeout: 600 }); else setTimeout(vigilar, 60);
+  };
+  if (window.scrollY > 40) arrancar(); else EV.forEach(function (n) { window.addEventListener(n, arrancar, { passive: true }); });
 
   if (quieto) sec.classList.add("quieto");
   window.addEventListener("scroll", pedir, { passive: true });

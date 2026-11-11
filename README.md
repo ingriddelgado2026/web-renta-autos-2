@@ -1,2 +1,3 @@
-# web-renta-autos-2
-Sitio web de alquiler de autos (segunda marca) - en preparacion
+﻿# Segunda marca de alquiler de autos (borrador)
+
+Pagina estatica (HTML, CSS y JavaScript sin librerias). Datos de marca, colores y precios provisionales.

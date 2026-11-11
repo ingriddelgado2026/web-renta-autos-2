@@ -1,0 +1,3 @@
+# Borrador: aún no se indexa
+User-agent: *
+Disallow: /

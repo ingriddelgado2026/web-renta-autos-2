@@ -14,7 +14,7 @@
   var movil = function () { return window.innerWidth < 760; };
   /* Por ahora solo hay videos verticales: se usan también en PC.
      Cuando lleguen los horizontales, se guardan en img/giro3/<auto>/pc/ y se cambia a true. */
-  var HAY_PC = false;
+  var HAY_PC = true;
   var carpeta = function () { return HAY_PC && !movil() ? "pc" : "movil"; };
   var fotos = autos.map(function () { return []; });
   var pedido = false, empezado = false, ultimo = "";
@@ -33,7 +33,8 @@
   var poner = function (img, alfa) {
     if (!img) return;
     var W = lienzo.width, H = lienzo.height, iw = img.naturalWidth, ih = img.naturalHeight, s, w, h, x, y;
-    if (movil() || HAY_PC) { s = Math.max(W / iw, H / ih); w = iw * s; h = ih * s; x = (W - w) / 2; y = (H - h) / 2; }
+    if (movil()) { s = Math.max(W / iw, H / ih); w = iw * s; h = ih * s; x = (W - w) / 2; y = (H - h) / 2; }
+    else if (HAY_PC) { s = Math.max(W / iw, H / ih) * 1.2; w = iw * s; h = ih * s; x = Math.min(0, W * .6 - w / 2); y = (H - h) / 2; } /* auto un poco a la derecha: el texto va a la izquierda */
     else { s = H * 1.05 / ih; w = iw * s; h = ih * s; x = W * .66 - w / 2; y = H - h; }
     ctx.globalAlpha = alfa; ctx.drawImage(img, x, y, w, h); ctx.globalAlpha = 1;
     if (!movil() && !HAY_PC) {
@@ -92,6 +93,10 @@
 
   if (quieto) sec.classList.add("quieto");
   window.addEventListener("scroll", pedir, { passive: true });
-  var t; window.addEventListener("resize", function () { clearTimeout(t); t = setTimeout(ajustar, 150); });
+  var antes = carpeta();
+  var t; window.addEventListener("resize", function () { clearTimeout(t); t = setTimeout(function () {
+    if (carpeta() !== antes) { antes = carpeta(); fotos = autos.map(function () { return []; }); empezado = false; cargar(); }
+    ajustar();
+  }, 150); });
   ajustar();
 })();

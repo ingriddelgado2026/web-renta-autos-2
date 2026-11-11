@@ -67,12 +67,13 @@ section{padding:136px 0}
 /* HERO */
 .hero{position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;padding:96px 0 0;overflow:hidden;isolation:isolate;
   background:
-    linear-gradient(to bottom,rgba(0,0,0,.6) 0%,rgba(0,0,0,.42) 28%,rgba(0,0,0,.08) 55%,rgba(0,0,0,.2) 80%,#000 100%),
-    url(../img/fondo-pc-dia.webp) center 62%/cover no-repeat #000}
+    linear-gradient(90deg,rgba(247,249,252,.96) 0%,rgba(247,249,252,.86) 30%,rgba(247,249,252,.35) 50%,rgba(247,249,252,0) 62%),
+    linear-gradient(to bottom,rgba(247,249,252,0) 82%,#f7f9fc 100%),
+    url(../img/fondo-pc-artdeco.webp) center bottom/cover no-repeat #f7f9fc}
 @media (max-width:760px){
   .hero{background:
-    linear-gradient(to bottom,rgba(0,0,0,.62) 0%,rgba(0,0,0,.45) 38%,rgba(0,0,0,.1) 60%,rgba(0,0,0,.25) 85%,#000 100%),
-    url(../img/fondo-movil-dia2.webp) center 40%/cover no-repeat #000}
+    linear-gradient(to bottom,rgba(247,249,252,.95) 0%,rgba(247,249,252,.92) 52%,rgba(247,249,252,.6) 64%,rgba(247,249,252,0) 76%,rgba(247,249,252,0) 90%,#f7f9fc 100%),
+    url(../img/fondo-movil-artdeco.webp) center bottom/cover no-repeat #f7f9fc}
 }
 .hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-3}
 .hero-copy{position:relative;z-index:2;text-align:center;margin-bottom:-2vh}
@@ -387,4 +388,104 @@ footer a:hover{color:#fff}
   *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
   .reveal,.feat{opacity:1;transform:none}
   .atras{opacity:1}
+}
+
+/* =====================================================================
+   DISEÑO PROPIO DE ESTA MARCA (va al final para cambiar lo de arriba)
+   Tema claro blanco y azul · portada dividida · títulos sin mayúsculas
+   ===================================================================== */
+:root{
+  --bg:#f7f9fc; --bg-2:#eef3f9; --card:#ffffff; --line:#dde5ef;
+  --text:#0d1b2a; --muted:#5a6a7d; --soft:#334458; --navy:#0b1a30;
+  --font-title:var(--font);
+}
+h1,h2,h3{text-transform:none;letter-spacing:-.03em;font-weight:700;line-height:1.04}
+h2{font-weight:700;letter-spacing:-.035em}
+p a,li a{text-decoration-color:rgba(10,79,196,.4)}
+a{color:var(--text)}
+
+/* Encabezado claro */
+.top.solid{background:rgba(255,255,255,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-color:var(--line)}
+.logo{color:var(--text)}
+.logo-txt{font-style:normal;text-transform:none;font-weight:800;letter-spacing:-.02em;font-size:1.25rem}
+.logo-txt b{color:var(--accent);font-weight:800}
+.nav a{color:var(--text);opacity:.8}
+.nav a:hover{color:var(--accent);opacity:1}
+.nav .lang{border-color:var(--line)}
+.nav .lang span.cur{background:var(--text);color:#fff}
+
+/* Portada: texto a la izquierda y autos a la derecha sobre la calle */
+.hero h1{text-transform:none;font-weight:800;letter-spacing:-.04em;line-height:1;font-size:clamp(2.4rem,min(4.3vw,8vh),4.2rem)}
+.hero h1 span{color:var(--accent)}
+.hero h1,.hero p,.hero .eyebrow{text-shadow:none}
+.hero .eyebrow{color:var(--accent);font-weight:700}
+.hero p{color:var(--soft)}
+.btn-ghost{background:#fff;color:var(--text);border:1px solid var(--line);box-shadow:0 6px 20px -10px rgba(13,27,42,.25)}
+.floor{background:radial-gradient(50% 50% at 50% 50%,rgba(13,27,42,.45),transparent 72%)}
+.scroll-hint{color:var(--soft)}
+.scroll-hint i{background:linear-gradient(var(--text),transparent)}
+@media (min-width:900px){
+  .hero{display:grid;grid-template-columns:minmax(16px,1fr) minmax(0,540px) minmax(0,640px) minmax(16px,1fr);grid-template-rows:1fr;column-gap:24px;padding:90px 0 0}
+  .hero-copy{grid-column:2;grid-row:1;align-self:center;width:auto;margin:0 0 8vh;text-align:left}
+  .hero p{margin:0 0 1.6em}
+  .hero-cta{justify-content:flex-start}
+  .stage{grid-column:3;grid-row:1;align-self:end;width:min(100%,84vh);margin:0 0 4vh;justify-self:end}
+  .atras-i{left:-4%;bottom:30%;width:46%}
+  .atras-d{right:-16%;bottom:30%;width:46%}
+  .scroll-hint{display:none}
+}
+
+/* Franjas y secciones claras */
+.stats{background:#fff}
+.stats b{color:var(--accent);font-weight:800;letter-spacing:-.03em}
+.confianza{background:#fff}
+.confianza svg{color:var(--accent)}
+.confianza .tarjeta{box-shadow:0 0 0 1px var(--line),0 4px 10px rgba(13,27,42,.08)}
+.show{background:var(--bg-2)}
+.bigword{-webkit-text-stroke:1px rgba(13,27,42,.12)}
+.slide-txt small,.auto small{font-family:var(--font);font-weight:700;letter-spacing:.14em;font-size:.75rem;color:var(--accent)}
+.slide-txt li{background:#fff}
+.track{stroke:#dbe4ef}
+.dot{fill:var(--accent)}
+.dot-glow{fill:rgba(10,79,196,.25)}
+.pasos b{background:var(--bg-2)}
+.feat:not(.on) .ic{background:var(--bg-2)}
+.feat .ic{background:rgba(10,79,196,.1);color:var(--accent)}
+.incluye,.faq{background:var(--bg-2)}
+.chip:hover{color:var(--accent);border-color:var(--accent)}
+
+/* Tarjetas de autos: fondo claro con degradado, sin vitrina */
+.auto{background:#fff;box-shadow:0 18px 40px -30px rgba(13,27,42,.35)}
+.auto:hover{box-shadow:0 26px 50px -26px rgba(10,79,196,.35)}
+.auto .ph,.elegido-ph{background:radial-gradient(120% 90% at 50% 0%,#ffffff 0%,#e7eff9 55%,#d5e2f2 100%);box-shadow:none}
+.auto .ph::after{content:none}
+.auto .ph::before,.elegido-ph::before{background:radial-gradient(closest-side,rgba(13,27,42,.35),transparent)}
+.auto .ph img{width:76%;bottom:12%}
+.auto[data-cat="suv"] .ph img,.auto[data-cat="suvgrande"] .ph img,.auto[data-cat="minivan"] .ph img{width:72%}
+.auto[data-cat="maxivan"] .ph img{width:68%}
+.auto .ph::before{bottom:9%;left:14%;right:14%}
+.elegido-ph img{width:72%;bottom:12%}
+.auto .precio b,.elegido-precio b{color:var(--text);font-weight:800}
+.auto .btn{background:var(--bg-2);border-color:transparent}
+
+/* Formulario y elegido */
+.form{box-shadow:0 30px 60px -40px rgba(13,27,42,.35)}
+.form input,.form select{background:var(--bg);color:var(--text)}
+.form input:focus,.form select:focus{outline-color:var(--accent)}
+.fecha-cal:hover{color:var(--accent);background:var(--bg-2)}
+.elegido{background:var(--bg)}
+.elegido-nombre{text-transform:none;font-weight:800}
+
+/* Pie oscuro azul marino */
+footer{background:var(--navy);border-top:0;color:#b9c5d4}
+footer a,.linkbtn{color:#b9c5d4}
+footer a:hover{color:#fff}
+
+/* Aviso de cookies, idioma y páginas legales */
+.cookies,.lang-bar{background:#fff;box-shadow:0 20px 50px -16px rgba(13,27,42,.35)}
+.legal h3{color:var(--text)}
+@media (max-width:760px){
+  .nav{background:rgba(255,255,255,.98)}
+  .nav .lang{border-bottom-color:var(--line)}
+  .hero-copy{margin-bottom:0}
 }

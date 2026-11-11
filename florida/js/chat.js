@@ -33,7 +33,8 @@
     pedido = false;
     var r = sec.getBoundingClientRect();
     /* en celular, el botón flotante de WhatsApp se oculta mientras se ve el chat (tapaba el botón de enviar) */
-    document.body.classList.toggle("chat-activo", r.top < window.innerHeight * .5 && r.bottom > window.innerHeight * .5);
+    var activo = r.top < window.innerHeight * .5 && r.bottom > window.innerHeight * .5;
+    if (activo !== document.body.classList.contains("chat-activo")) document.body.classList.toggle("chat-activo", activo);
     if (r.bottom < -200 || r.top > window.innerHeight + 200) return;
     if (!fotoLista) { fotoLista = true; [].forEach.call(sec.querySelectorAll("img[data-src]"), function (i) { i.src = i.dataset.src; i.removeAttribute("data-src"); }); }
 
@@ -67,6 +68,14 @@
     pasos.forEach(function (li) { var n = +li.dataset.paso; li.classList.toggle("on", n === actual); li.classList.toggle("hecho", n < actual); });
   };
   var pedir = function () { if (!pedido) { pedido = true; requestAnimationFrame(pintar); } };
-  window.addEventListener("scroll", pedir, { passive: true });
-  window.addEventListener("resize", pedir);
+  /* no mide nada hasta que el visitante baja de verdad (así no frena la carga de la página) */
+  var EV = ["scroll", "wheel", "touchmove", "keydown"];
+  var arrancar = function (e) {
+    if (e && e.type === "scroll" && window.scrollY < 40) return;
+    EV.forEach(function (n) { window.removeEventListener(n, arrancar); });
+    window.addEventListener("scroll", pedir, { passive: true });
+    window.addEventListener("resize", pedir);
+    pedir();
+  };
+  if (window.scrollY > 40) arrancar(); else EV.forEach(function (n) { window.addEventListener(n, arrancar, { passive: true }); });
 })();

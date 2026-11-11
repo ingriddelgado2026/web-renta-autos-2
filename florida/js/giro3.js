@@ -24,7 +24,7 @@
   var buscar = function (a, n) { var k = n; while (k >= 0 && !lista(fotos[a][k])) k--; if (k < 0) { k = n; while (k < N && !lista(fotos[a][k])) k++; } return fotos[a][k]; };
 
   var ajustar = function () {
-    var r = window.devicePixelRatio > 1 ? Math.min(window.devicePixelRatio, 2) : 1;
+    var r = Math.min(window.devicePixelRatio || 1, 2); /* nítido en pantallas de alta densidad (celulares) */
     lienzo.width = Math.round(lienzo.clientWidth * r); lienzo.height = Math.round(lienzo.clientHeight * r);
     ultimo = ""; pintar();
   };
@@ -34,8 +34,9 @@
     if (!img) return;
     var W = lienzo.width, H = lienzo.height, iw = img.naturalWidth, ih = img.naturalHeight, s, w, h, x, y;
     if (movil()) { s = Math.max(W / iw, H / ih); w = iw * s; h = ih * s; x = (W - w) / 2; y = (H - h) / 2; }
-    else if (HAY_PC) { s = Math.max(W / iw, H / ih) * 1.2; w = iw * s; h = ih * s; x = Math.min(0, W * .6 - w / 2); y = (H - h) / 2; } /* auto un poco a la derecha: el texto va a la izquierda */
+    else if (HAY_PC) { s = Math.max(W / iw, H / ih) * 1.06; w = iw * s; h = ih * s; x = Math.max(W - w, Math.min(0, W * .58 - w / 2)); y = (H - h) / 2; } /* auto un poco a la derecha: el texto va a la izquierda */
     else { s = H * 1.05 / ih; w = iw * s; h = ih * s; x = W * .66 - w / 2; y = H - h; }
+    ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high";
     ctx.globalAlpha = alfa; ctx.drawImage(img, x, y, w, h); ctx.globalAlpha = 1;
     if (!movil() && !HAY_PC) {
       var f = w * .28, g = ctx.createLinearGradient(x, 0, x + f, 0);
@@ -55,8 +56,10 @@
      así que la siguiente escena empieza sin corte (solo un fundido muy corto).
      Escena 3: el auto llega al centro y enciende las luces. */
   var TEXTO = [[.08, .7], [.08, .7], [.06, 1.01]]; /* cuándo se ve el texto de cada auto (parte de su tramo) */
+  var listo = false;
   function pintar() {
     pedido = false;
+    if (!listo) return;
     var p = quieto ? 0 : avance(), T = autos.length, pos = Math.min(p * T, T - .0001);
     var a = Math.floor(pos), t = pos - a, GIRO = .95;
     var n = Math.round(Math.min(t / GIRO, 1) * (N - 1));
@@ -75,6 +78,7 @@
   /* Descarga ordenada: primero algunas imágenes repartidas de cada auto, luego el resto en orden */
   var cargar = function () {
     if (empezado) return; empezado = true;
+    if (!listo) { listo = true; ajustar(); }
     var orden = [], a, i;
     for (a = 0; a < autos.length; a++) for (i = 0; i < N; i += 9) orden.push([a, i]);
     for (a = 0; a < autos.length; a++) { orden.push([a, N - 1]); for (i = 0; i < N; i++) orden.push([a, i]); }
@@ -101,7 +105,6 @@
   var antes = carpeta();
   var t; window.addEventListener("resize", function () { clearTimeout(t); t = setTimeout(function () {
     if (carpeta() !== antes) { antes = carpeta(); fotos = autos.map(function () { return []; }); empezado = false; cargar(); }
-    ajustar();
+    if (listo) ajustar();
   }, 150); });
-  ajustar();
 })();

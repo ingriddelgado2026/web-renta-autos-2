@@ -1,35 +1,70 @@
-/* Cómo funciona: la conversación de WhatsApp se escribe (o se borra) según cuánto bajas.
-   Antes de cada respuesta del asesor aparece "escribiendo…", y el paso de la derecha se ilumina. */
+/* Cómo funciona: la conversación de WhatsApp avanza (o retrocede) según cuánto bajas.
+   1) La solicitud del formulario aparece lista en la barra de escribir, se pulsa "enviar" y pasa al chat.
+   2) Antes de cada respuesta del asesor se ve "escribiendo…".
+   3) Las respuestas del cliente se escriben letra por letra y se envían.
+   El paso de la derecha se ilumina según el mensaje. */
 (function () {
   "use strict";
   var sec = document.querySelector(".chat-sec");
   if (!sec || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  var cel = sec.querySelector(".cel");
   var msgs = [].slice.call(sec.querySelectorAll(".msg:not(.escribe)"));
   var escribe = sec.querySelector(".msg.escribe");
+  var texto = sec.querySelector(".cel-texto");
   var pasos = [].slice.call(sec.querySelectorAll(".chat-pasos li"));
-  var N = msgs.length, pedido = false, ultimo = -2, fotoLista = false;
+  var pedido = false, ultimo = "", fotoLista = false;
+
+  /* Línea de tiempo: cada mensaje tiene una "preparación" (borrador o escribiendo…) y luego aparece */
+  var tramos = [];
+  msgs.forEach(function (m, i) {
+    var sale = m.classList.contains("out");
+    if (sale) tramos.push({ tipo: m.dataset.pre ? "lleno" : "teclea", i: i, peso: m.dataset.pre ? 1.6 : 1.1 });
+    else tramos.push({ tipo: "escribe", i: i, peso: .55 });
+    tramos.push({ tipo: "ver", i: i, peso: sale ? .45 : .6 });
+  });
+  var total = tramos.reduce(function (a, t) { return a + t.peso; }, 0);
 
   var avance = function () {
     var r = sec.getBoundingClientRect(), largo = sec.offsetHeight - window.innerHeight;
     return largo > 0 ? Math.min(1, Math.max(0, -r.top / largo)) : 1;
   };
+
   var pintar = function () {
     pedido = false;
     var r = sec.getBoundingClientRect();
+    /* en celular, el botón flotante de WhatsApp se oculta mientras se ve el chat (tapaba el botón de enviar) */
+    document.body.classList.toggle("chat-activo", r.top < window.innerHeight * .5 && r.bottom > window.innerHeight * .5);
     if (r.bottom < -200 || r.top > window.innerHeight + 200) return;
-    /* la foto del auto del chat se pide recién cuando la sección está cerca */
     if (!fotoLista) { fotoLista = true; [].forEach.call(sec.querySelectorAll("img[data-src]"), function (i) { i.src = i.dataset.src; i.removeAttribute("data-src"); }); }
-    /* los mensajes aparecen entre el 4% y el 88% del recorrido */
-    var p = avance(), x = (p - .04) / .84 * N, n = Math.max(0, Math.min(N, Math.floor(x + .0001)));
-    var resto = x - Math.floor(x), sig = msgs[n];
-    var tecleando = n < N && x >= 0 && sig && sig.classList.contains("in") && resto > .45;
-    var clave = n * 2 + (tecleando ? 1 : 0);
+
+    /* la conversación ocupa del 3% al 92% del recorrido */
+    var x = (avance() - .03) / .89 * total, k = -1, t = 0, acum = 0;
+    if (x >= 0) for (k = 0; k < tramos.length; k++) { if (x < acum + tramos[k].peso) { t = (x - acum) / tramos[k].peso; break; } acum += tramos[k].peso; }
+    if (k >= tramos.length) { k = tramos.length - 1; t = 1; }
+    var tr = k >= 0 ? tramos[k] : null;
+    var visibles = !tr ? 0 : (tr.tipo === "ver" ? tr.i + 1 : tr.i);
+    var borrador = "", escribiendo = false, conForm = false, pulsa = false;
+    if (tr && (tr.tipo === "lleno" || tr.tipo === "teclea")) {
+      var b = msgs[tr.i].dataset.borrador || "";
+      if (tr.tipo === "lleno") { borrador = t > .12 ? b : ""; conForm = !!borrador; }
+      else borrador = b.slice(0, Math.ceil(Math.min(1, t / .82) * b.length));
+      pulsa = t > .86;
+    }
+    if (tr && tr.tipo === "escribe") escribiendo = t > .15;
+
+    var clave = visibles + "|" + borrador.length + "|" + escribiendo + "|" + pulsa + "|" + conForm;
     if (clave === ultimo) return; ultimo = clave;
-    msgs.forEach(function (m, i) { m.classList.toggle("ver", i < n); });
-    escribe.classList.toggle("ver", !!tecleando);
-    var actual = n ? +msgs[n - 1].dataset.paso : 0;
-    if (tecleando) actual = Math.max(actual, +sig.dataset.paso);
-    pasos.forEach(function (li) { var k = +li.dataset.paso; li.classList.toggle("on", k === actual); li.classList.toggle("hecho", k < actual); });
+
+    msgs.forEach(function (m, i) { m.classList.toggle("ver", i < visibles); });
+    escribe.classList.toggle("ver", escribiendo);
+    texto.textContent = borrador;
+    texto.classList.toggle("cursor", !!borrador && tr.tipo === "teclea");
+    cel.classList.toggle("con-texto", !!borrador);
+    cel.classList.toggle("con-form", conForm);
+    cel.classList.toggle("pulsa", pulsa);
+
+    var actual = tr ? +msgs[tr.i].dataset.paso : 0;
+    pasos.forEach(function (li) { var n = +li.dataset.paso; li.classList.toggle("on", n === actual); li.classList.toggle("hecho", n < actual); });
   };
   var pedir = function () { if (!pedido) { pedido = true; requestAnimationFrame(pintar); } };
   window.addEventListener("scroll", pedir, { passive: true });

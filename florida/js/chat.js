@@ -5,6 +5,17 @@
    El paso de la derecha se ilumina según el mensaje. */
 (function () {
   "use strict";
+  /* Al cargar solo se espera el primer scroll real del visitante; todo lo demás se prepara después */
+  var EV = ["scroll", "wheel", "touchmove", "keydown"], hecho = false;
+  var arrancar = function (e) {
+    if (hecho || (e && e.type === "scroll" && window.scrollY < 40)) return;
+    hecho = true;
+    EV.forEach(function (n) { window.removeEventListener(n, arrancar); });
+    if (window.requestIdleCallback) requestIdleCallback(iniciar, { timeout: 500 }); else setTimeout(iniciar, 50);
+  };
+  EV.forEach(function (n) { window.addEventListener(n, arrancar, { passive: true }); });
+
+  function iniciar() {
   var sec = document.querySelector(".chat-sec");
   if (!sec || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   var cel = sec.querySelector(".cel");
@@ -68,14 +79,10 @@
     pasos.forEach(function (li) { var n = +li.dataset.paso; li.classList.toggle("on", n === actual); li.classList.toggle("hecho", n < actual); });
   };
   var pedir = function () { if (!pedido) { pedido = true; requestAnimationFrame(pintar); } };
-  /* no mide nada hasta que el visitante baja de verdad (así no frena la carga de la página) */
-  var EV = ["scroll", "wheel", "touchmove", "keydown"];
-  var arrancar = function (e) {
-    if (e && e.type === "scroll" && window.scrollY < 40) return;
-    EV.forEach(function (n) { window.removeEventListener(n, arrancar); });
-    window.addEventListener("scroll", pedir, { passive: true });
-    window.addEventListener("resize", pedir);
-    pedir();
-  };
-  if (window.scrollY > 40) arrancar(); else EV.forEach(function (n) { window.addEventListener(n, arrancar, { passive: true }); });
+  window.addEventListener("scroll", pedir, { passive: true });
+  window.addEventListener("resize", pedir);
+  pedir();
+  }
+  /* si la página se abrió ya bajada (por ejemplo al volver atrás) */
+  window.addEventListener("load", function () { if (window.scrollY > 40) arrancar(); });
 })();

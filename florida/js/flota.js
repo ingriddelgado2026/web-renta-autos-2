@@ -39,9 +39,13 @@
     /* filtros: con una categoría elegida, los autos se muestran juntos sin deslizar */
     [].forEach.call(document.querySelectorAll(".chip"), function (c) {
       c.addEventListener("click", function () {
-        var todos = c.dataset.f === "todos";
+        var todos = c.dataset.f === "todos", antes = sec.getBoundingClientRect().top;
         sec.classList.toggle("filtrado", !todos);
+        /* cuántos autos quedaron: el CSS adapta el tamaño de las tarjetas */
+        sec.dataset.n = [].filter.call(sec.querySelectorAll(".auto"), function (a) { return !a.hidden; }).length;
         filas.forEach(function (f) { f.style.transform = ""; });
+        /* la sección cambia de alto: se deja el inicio de la flota a la vista para que la página no salte */
+        if (antes < 0) window.scrollTo({ top: sec.getBoundingClientRect().top + window.scrollY, behavior: "instant" });
         if (todos) requestAnimationFrame(medir);
       });
     });

@@ -539,8 +539,30 @@ footer a:hover{color:#fff}
 /* con un filtro elegido: sin deslizar, los autos juntos */
 #flota.flota-desliza.filtrado{height:auto;padding:110px 0 80px}
 .filtrado .flota-pin{position:static;height:auto;overflow:visible}
-.filtrado .filas{flex-direction:row;flex-wrap:wrap;justify-content:center;width:min(var(--max),100% - 32px);margin-inline:auto}
 .filtrado .fila{display:contents}
+/* tarjetas grandes con un filtro elegido: se adaptan a la cantidad de autos (data-n) */
+.filtrado .filas{display:grid;gap:18px;width:min(var(--max),100% - 32px);margin-inline:auto;grid-template-columns:repeat(4,minmax(0,1fr))}
+.filtrado[data-n="3"] .filas{grid-template-columns:repeat(3,minmax(0,1fr));width:min(1040px,100% - 32px)}
+.filtrado[data-n="2"] .filas{grid-template-columns:repeat(2,minmax(0,1fr));width:min(860px,100% - 32px)}
+.filtrado[data-n="1"] .filas{grid-template-columns:minmax(0,1fr);width:min(960px,100% - 32px)}
+.flota-desliza.filtrado .auto{width:auto;display:flex;flex-direction:column;padding:18px}
+.flota-desliza.filtrado .auto .ph{height:auto;min-height:0;aspect-ratio:16/9;margin:-6px -6px 14px}
+.flota-desliza.filtrado .auto .ph img{width:66%;bottom:15%}
+.flota-desliza.filtrado .auto small{font-size:.9rem}
+.flota-desliza.filtrado .auto h3{font-size:1.6rem;margin:.15em 0 .3em}
+.flota-desliza.filtrado .auto .sim{display:block;margin:-.2em 0 .7em;font-size:.8rem}
+.flota-desliza.filtrado .specs{margin:0 0 16px;font-size:.85rem;gap:6px 14px}
+.flota-desliza.filtrado .specs li{display:flex}
+.flota-desliza.filtrado .auto .precio{margin:auto 0 12px;padding-top:12px;font-size:.85rem}
+.flota-desliza.filtrado .auto .precio b{font-size:2rem}
+.flota-desliza.filtrado .auto .btn{padding:.75em 1em;font-size:.95rem}
+/* un solo auto: tarjeta destacada, foto grande a la izquierda */
+.flota-desliza.filtrado[data-n="1"] .auto{display:grid;grid-template-columns:1.25fr 1fr;column-gap:28px;align-content:center;padding:22px}
+.flota-desliza.filtrado[data-n="1"] .auto > *{grid-column:2}
+.flota-desliza.filtrado[data-n="1"] .auto .ph{grid-column:1;grid-row:1/8;margin:0;aspect-ratio:16/10;align-self:center}
+.flota-desliza.filtrado[data-n="1"] .auto h3{font-size:2.2rem}
+.flota-desliza.filtrado[data-n="1"] .auto .precio b{font-size:2.6rem}
+.flota-desliza.filtrado[data-n="1"] .auto .precio{margin-top:6px}
 @media (max-width:760px){
   #flota.flota-desliza{height:270vh}
   .flota-pin{padding:70px 0 10px;gap:10px}
@@ -559,6 +581,12 @@ footer a:hover{color:#fff}
   .flota-desliza .auto .precio{margin:0 0 6px}
   .flota-desliza .auto .precio b{font-size:1.3rem}
   .flota-desliza .nota-precio{display:none}
+  .filtrado .filas,.filtrado[data-n] .filas{grid-template-columns:minmax(0,1fr);width:min(440px,100% - 32px);gap:14px}
+  .flota-desliza.filtrado[data-n="1"] .auto{display:flex;padding:16px}
+  .flota-desliza.filtrado[data-n="1"] .auto .ph{margin:-4px -4px 12px;aspect-ratio:16/9;align-self:stretch}
+  .flota-desliza.filtrado .auto h3,.flota-desliza.filtrado[data-n="1"] .auto h3{font-size:1.5rem}
+  .flota-desliza.filtrado .auto .precio b,.flota-desliza.filtrado[data-n="1"] .auto .precio b{font-size:1.9rem}
+  #flota.flota-desliza.filtrado{padding:90px 0 60px}
   .filtrado .flota-desliza .nota-precio,.flota-desliza.filtrado .nota-precio{display:block}
 }
-.flota-desliza .auto[hidden]{display:none}
+.flota-desliza .auto[hidden]{display:none!important}

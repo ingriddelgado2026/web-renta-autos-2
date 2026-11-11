@@ -50,16 +50,21 @@
     return largo > 0 ? Math.min(1, Math.max(0, -r.top / largo)) : 1;
   };
 
-  /* Cada auto ocupa un tercio del recorrido: gira en el 82% y en el resto se funde con el siguiente */
+  /* Cada auto ocupa un tercio del recorrido.
+     Escenas 1 y 2: el auto entra por un lado y sale por el otro; el video termina con el estudio vacío,
+     así que la siguiente escena empieza sin corte (solo un fundido muy corto).
+     Escena 3: el auto llega al centro y enciende las luces. */
+  var TEXTO = [[.08, .7], [.08, .7], [.06, 1.01]]; /* cuándo se ve el texto de cada auto (parte de su tramo) */
   function pintar() {
     pedido = false;
     var p = quieto ? 0 : avance(), T = autos.length, pos = Math.min(p * T, T - .0001);
-    var a = Math.floor(pos), t = pos - a, GIRO = .82;
+    var a = Math.floor(pos), t = pos - a, GIRO = .95;
     var n = Math.round(Math.min(t / GIRO, 1) * (N - 1));
     var mezcla = a < T - 1 && t > GIRO ? (t - GIRO) / (1 - GIRO) : 0;
     var clave = a + ":" + n + ":" + mezcla.toFixed(2) + ":" + fotos[a].length;
-    escenas.forEach(function (e, i) { e.classList.toggle("act", i === (mezcla > .5 ? a + 1 : a)); });
-    puntos.forEach(function (d, i) { d.classList.toggle("on", i === (mezcla > .5 ? a + 1 : a)); });
+    var r = TEXTO[a] || [0, 1.01], visible = quieto || (t >= r[0] && t < r[1]);
+    escenas.forEach(function (e, i) { e.classList.toggle("act", i === a && visible); });
+    puntos.forEach(function (d, i) { d.classList.toggle("on", i === a); });
     if (clave === ultimo) return; ultimo = clave;
     ctx.clearRect(0, 0, lienzo.width, lienzo.height); /* transparente: deja ver la palabra grande a los lados */
     poner(buscar(a, n), 1 - mezcla);

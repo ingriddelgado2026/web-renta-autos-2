@@ -511,3 +511,53 @@ footer a:hover{color:#fff}
   .chat-sec{height:auto}.chat-pin{position:relative;height:auto;min-height:100svh}
   .msg{display:block;animation:none}.msg.escribe{display:none}.chat-pasos li{opacity:1}
 }
+
+/* ===== Flota en dos filas que se deslizan con el scroll ===== */
+#flota.flota-desliza{height:250vh;padding:0;position:relative;content-visibility:visible}
+.flota-pin{position:sticky;top:0;height:100vh;height:100svh;display:flex;flex-direction:column;justify-content:center;gap:14px;padding:80px 0 14px;overflow:hidden}
+.flota-desliza .head{margin-bottom:6px}
+.flota-desliza .head h2{margin-bottom:.15em}
+.flota-desliza .head .lead{display:none}
+.flota-desliza .chips{margin-bottom:0}
+.filas{display:flex;flex-direction:column;gap:14px}
+.fila{display:flex;gap:14px;width:max-content;padding:0 max(16px,calc((100vw - var(--max)) / 2));will-change:transform}
+/* tarjeta compacta (PC): foto a la izquierda, datos a la derecha */
+.flota-desliza .auto{flex:none;width:400px;display:grid;grid-template-columns:168px 1fr;column-gap:14px;align-content:start;padding:12px}
+.flota-desliza .auto > *{grid-column:2}
+.flota-desliza .auto .ph{grid-column:1;grid-row:1/8;margin:0;aspect-ratio:auto;height:100%;min-height:150px}
+.flota-desliza .auto .ph img{width:88%;bottom:15%}
+.flota-desliza .auto small{font-size:.72rem}
+.flota-desliza .auto h3{font-size:1.25rem;margin:.05em 0 .1em}
+.flota-desliza .auto .sim{margin:0 0 .35em;font-size:.72rem}
+.flota-desliza .specs{margin:0 0 6px;font-size:.78rem;gap:2px 10px}
+.flota-desliza .specs li:nth-child(2),.flota-desliza .specs li:nth-child(4),.flota-desliza .specs li:nth-child(5){display:none}
+.flota-desliza .auto .precio{margin:0 0 8px;padding-top:6px;font-size:.78rem}
+.flota-desliza .auto .precio b{font-size:1.45rem}
+.flota-desliza .auto .btn{padding:.5em .9em;font-size:.85rem}
+.flota-desliza .nota-precio{margin:0;font-size:.78rem}
+/* con un filtro elegido: sin deslizar, los autos juntos */
+#flota.flota-desliza.filtrado{height:auto;padding:110px 0 80px}
+.filtrado .flota-pin{position:static;height:auto;overflow:visible}
+.filtrado .filas{flex-direction:row;flex-wrap:wrap;justify-content:center;width:min(var(--max),100% - 32px);margin-inline:auto}
+.filtrado .fila{display:contents}
+@media (max-width:760px){
+  #flota.flota-desliza{height:270vh}
+  .flota-pin{padding:70px 0 10px;gap:10px}
+  .flota-desliza .head h2{font-size:1.75rem}
+  .flota-desliza .head .eyebrow{margin-bottom:.3rem}
+  .flota-desliza .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:-16px;padding:0 16px}
+  .flota-desliza .chips::-webkit-scrollbar{display:none}
+  .flota-desliza .chip{flex:none;padding:.45em .95em;font-size:.82rem}
+  .filas,.fila{gap:10px}
+  .flota-desliza .auto{width:232px;display:flex;padding:10px}
+  .flota-desliza .auto .ph{height:auto;aspect-ratio:16/9;min-height:0;margin:0 0 8px}
+  .flota-desliza .auto .ph img{width:70%;bottom:16%}
+  .flota-desliza .auto h3{font-size:1.12rem}
+  .flota-desliza .auto .sim{display:none}
+  .flota-desliza .specs li:nth-child(3){display:none}
+  .flota-desliza .auto .precio{margin:0 0 6px}
+  .flota-desliza .auto .precio b{font-size:1.3rem}
+  .flota-desliza .nota-precio{display:none}
+  .filtrado .flota-desliza .nota-precio,.flota-desliza.filtrado .nota-precio{display:block}
+}
+.flota-desliza .auto[hidden]{display:none}

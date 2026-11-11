@@ -507,3 +507,46 @@ footer a:hover{color:#fff}
     linear-gradient(to bottom,rgba(255,255,255,.55) 0%,rgba(255,255,255,.45) 45%,rgba(255,255,255,.15) 62%,rgba(255,255,255,0) 72%),
     url(../img/fondo-movil-artdeco.webp) center bottom/cover no-repeat #f7f9fc}
 }
+
+/* ===== Auto en 3D con el scroll (imágenes del video) ===== */
+.giro{height:320vh;padding:0;position:relative;background:#050c1a;color:#fff}
+.giro-pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+.giro-lienzo{position:absolute;inset:0;width:100%;height:100%;display:block}
+.giro-pin::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(to bottom,rgba(5,12,26,.75) 0%,rgba(5,12,26,0) 26%,rgba(5,12,26,0) 80%,rgba(5,12,26,.6) 100%)}
+.giro-txt{position:relative;z-index:2;padding-top:96px}
+.giro-txt .eyebrow{color:#8fb6ff}
+.giro-txt h2{color:#fff;max-width:16ch;margin:0}
+.giro-txt h2 span{color:#5e9bff}
+.giro-puntos{list-style:none;margin:0;padding:0;position:absolute;inset:0;z-index:2;pointer-events:none}
+.giro-puntos li{position:absolute;width:min(260px,22vw);padding:14px 16px;border-radius:14px;
+  background:rgba(8,20,42,.55);border:1px solid rgba(94,155,255,.35);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  opacity:0;transform:translateY(16px);transition:opacity .5s,transform .5s}
+.giro-puntos li.on{opacity:1;transform:none}
+.giro-puntos b{display:block;font-size:1.02rem;color:#fff}
+.giro-puntos span{display:block;font-size:.85rem;color:#b8c8e4;line-height:1.4;margin-top:2px}
+.giro-puntos li::before{content:"";position:absolute;top:50%;width:46px;height:1px;background:linear-gradient(90deg,#5e9bff,transparent)}
+.giro-puntos li::after{content:"";position:absolute;top:calc(50% - 4px);width:8px;height:8px;border-radius:50%;background:#5e9bff;box-shadow:0 0 12px #5e9bff}
+.giro-puntos li:nth-child(odd){left:max(16px,5vw)}
+.giro-puntos li:nth-child(even){right:max(16px,5vw)}
+.giro-puntos li:nth-child(odd)::before{left:100%}.giro-puntos li:nth-child(odd)::after{left:calc(100% + 46px)}
+.giro-puntos li:nth-child(even)::before{right:100%;transform:scaleX(-1)}.giro-puntos li:nth-child(even)::after{right:calc(100% + 46px)}
+.giro-puntos li:nth-child(1),.giro-puntos li:nth-child(2){top:44%}
+.giro-puntos li:nth-child(3),.giro-puntos li:nth-child(4){top:64%}
+.giro-barra{position:absolute;left:50%;bottom:26px;z-index:2;width:160px;height:3px;margin-left:-80px;border-radius:3px;background:rgba(255,255,255,.18);overflow:hidden}
+.giro-barra i{display:block;height:100%;background:#5e9bff;transform:scaleX(0);transform-origin:left}
+.giro-hint{position:absolute;left:0;right:0;bottom:40px;z-index:2;text-align:center;margin:0;font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;color:#b8c8e4;transition:opacity .4s}
+.giro.empezo .giro-hint{opacity:0}
+@media (max-width:759px){
+  .giro{height:300vh}
+  .giro-txt{padding-top:84px;text-align:center}
+  .giro-txt h2{margin-inline:auto;font-size:1.9rem}
+  .giro-puntos{inset:auto 12px 92px 12px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .giro-puntos li{position:static;width:auto;padding:10px 12px}
+  .giro-puntos li::before,.giro-puntos li::after{content:none}
+  .giro-puntos span{display:none}
+  .giro-puntos b{font-size:.9rem}
+  .giro-hint{bottom:30px}.giro-barra{bottom:18px}
+}
+.giro.quieto{height:auto}
+.giro.quieto .giro-pin{position:relative;height:100svh}

@@ -524,8 +524,19 @@
       ciclo();
     }).catch(function () {});
   };
-  var empezar = function () { setTimeout(function () { if (window.requestIdleCallback) requestIdleCallback(preparar, { timeout: 1500 }); else preparar(); }, 2500); };
-  if (document.readyState === "complete") empezar(); else window.addEventListener("load", empezar);
+  /* Empieza con el primer movimiento del visitante (mouse, dedo o scroll) o, si no se mueve, 8 s después de cargar:
+     así la medición de velocidad de Google (que no se mueve y termina antes) ve la página quieta */
+  var EVH = ["pointermove", "touchstart", "scroll", "wheel", "keydown"], iniciado = false, espera = 0;
+  var empezar = function () {
+    if (iniciado) return; iniciado = true; clearTimeout(espera);
+    EVH.forEach(function (n) { window.removeEventListener(n, empezar); });
+    setTimeout(function () { if (window.requestIdleCallback) requestIdleCallback(preparar, { timeout: 1500 }); else preparar(); }, 600);
+  };
+  var alCargar = function () {
+    EVH.forEach(function (n) { window.addEventListener(n, empezar, { passive: true }); });
+    espera = setTimeout(empezar, 8000);
+  };
+  if (document.readyState === "complete") alCargar(); else window.addEventListener("load", alCargar);
 
   if ("IntersectionObserver" in window) new IntersectionObserver(function (es) { aLaVista = es[0].isIntersecting; }).observe(stage);
   var t; window.addEventListener("resize", function () { clearTimeout(t); t = setTimeout(function () {
